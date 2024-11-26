@@ -12,3 +12,4 @@ Route::post('/animals', [AnimalController::class,'store']);
 Route::get('/animals',[AnimalController::class,'getAllAnimals']);
 Route::get('/animals/{id}',[AnimalController::class,'getAnimal']);
 Route::delete('/animals/{id}',[AnimalController::class,'deleteAnimal']);
+Route::put('/animals/{id}',[AnimalController::class,'updateAnimal']);

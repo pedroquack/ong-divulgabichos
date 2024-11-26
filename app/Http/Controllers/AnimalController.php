@@ -28,8 +28,8 @@ class AnimalController extends Controller
         $animal = $this->animalService->create($data);
 
         if($request->hasFile('img')){
-            $file = $request->file('img')->store('images','s3');
-            $url = Storage::url($file);
+            $file = $request->file('img');
+            $url = $this->animalService->uploadImageToBucket($file);
         }
 
         $animalImage = $this->animalService->setAnimalImage($animal, $url);
@@ -78,6 +78,39 @@ class AnimalController extends Controller
 
         return response()->json([
             'success' => 'Dados do Animal foram excluídos com sucesso!'
+        ],200);
+    }
+
+    public function updateAnimal(Request $request, $id){
+        dd($request);
+        $request->validate([
+            'name' => 'required|max:96',
+            'description' => 'required| max:2000',
+            'img' => 'nullable|image|max:2048'
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+        ];
+
+        $animal = $this->animalService->getById($id);
+        if(!$animal){
+            return response()->json(['error' => 'Não foi possivel recuperar dados do animal!', 404]);
+        }
+
+        if($request->hasFile('img')){
+            $data['file'] = $request->file('img');
+        }
+
+        $updateAnimal = $this->animalService->updateAnimalById($id,$data);
+
+        if(!$updateAnimal){
+            return response()->json(['error' => 'Erro ao atualizar dados do Animal', 500]);
+        }
+
+        return response()->json([
+            'success' => 'Dados do Animal foram alterados com sucesso!'
         ],200);
     }
 }
