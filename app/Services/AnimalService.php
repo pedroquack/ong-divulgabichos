@@ -50,16 +50,17 @@ class AnimalService{
 
     public function updateAnimalById($id,$data){
         $animal = $this->getById($id);
-
         if(!$animal){
             return false;
         }
 
-        if($data['file']){
+        if(isset($data['file'])){
             $file = $data['file'];
             $relativePath = str_replace($this->bucketUrl . '/', '', $animal->img_url);
             $this->deleteImageFromBucket($relativePath);
-            $this->uploadImageToBucket($file);
+            $url = $this->uploadImageToBucket($file);
+            $data['img_url'] = $url;
+            unset($data['file']);
         }
 
         if(!$animal->update($data)){

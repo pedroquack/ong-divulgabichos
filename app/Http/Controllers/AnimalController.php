@@ -35,7 +35,7 @@ class AnimalController extends Controller
         $animalImage = $this->animalService->setAnimalImage($animal, $url);
 
          if(!$animal || !$animalImage){
-             return response()->json(['error' => 'Erro ao inserir dados do animal!', 404]);
+             return response()->json(['error' => 'Erro ao inserir dados do animal!'], 404);
          }
 
         return response()->json([
@@ -48,7 +48,7 @@ class AnimalController extends Controller
         $animals = $this->animalService->getAll();
 
         if(!$animals){
-            return response()->json(['error' => 'Erro recuperar dados do animais!', 404]);
+            return response()->json(['error' => 'Erro recuperar dados do animais!'], 404);
         }
 
         return response()->json([
@@ -60,7 +60,7 @@ class AnimalController extends Controller
     public function getAnimal($id){
         $animal = $this->animalService->getById($id);
         if(!$animal){
-            return response()->json(['error' => 'Não foi possivel recuperar dados do animal!', 404]);
+            return response()->json(['error' => 'Não foi possivel recuperar dados do animal!'], 404);
         }
 
         return response()->json([
@@ -73,7 +73,7 @@ class AnimalController extends Controller
         $deleteAnimal = $this->animalService->deleteAnimalById($id);
 
         if(!$deleteAnimal){
-            return response()->json(['error' => 'Erro ao excluir dados do animal!', 500]);
+            return response()->json(['error' => 'Erro ao excluir dados do animal!'], 500);
         }
 
         return response()->json([
@@ -82,21 +82,23 @@ class AnimalController extends Controller
     }
 
     public function updateAnimal(Request $request, $id){
-        dd($request);
         $request->validate([
-            'name' => 'required|max:96',
-            'description' => 'required| max:2000',
+            'name' => 'max:96',
+            'description' => 'max:2000',
             'img' => 'nullable|image|max:2048'
         ]);
 
-        $data = [
-            'name' => $request->name,
-            'description' => $request->description,
-        ];
+        $data = [];
+        if(isset($request->name)){
+            $data['name'] = $request->name;
+        }
+        if(isset($request->description)){
+            $data['description'] = $request->description;
+        }
 
         $animal = $this->animalService->getById($id);
         if(!$animal){
-            return response()->json(['error' => 'Não foi possivel recuperar dados do animal!', 404]);
+            return response()->json(['error' => 'Não foi possivel recuperar dados do animal!'], 404);
         }
 
         if($request->hasFile('img')){
@@ -106,7 +108,7 @@ class AnimalController extends Controller
         $updateAnimal = $this->animalService->updateAnimalById($id,$data);
 
         if(!$updateAnimal){
-            return response()->json(['error' => 'Erro ao atualizar dados do Animal', 500]);
+            return response()->json(['error' => 'Erro ao atualizar dados do Animal'], 500);
         }
 
         return response()->json([
