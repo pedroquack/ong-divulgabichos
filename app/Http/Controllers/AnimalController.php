@@ -16,7 +16,7 @@ class AnimalController extends Controller
         $request->validate([
             'name' => 'required|max:96',
             'description' => 'required| max:2000',
-            'img' => 'required|image|max:2048'
+            'img' => 'required|image|max:4096'
         ]);
 
 
@@ -113,6 +113,6 @@ class AnimalController extends Controller
 
         return response()->json([
             'success' => 'Dados do Animal foram alterados com sucesso!'
-        ],200);
+        ], 200);
     }
 }
